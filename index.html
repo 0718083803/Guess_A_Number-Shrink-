@@ -1,0 +1,135 @@
+<html>
+
+<head>
+    <title>Guess A Number: </title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+</head>
+
+<body>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #eef3ff, #dfeaff);
+            color: #1f2937;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        #answer {
+            width: 100%;
+            max-width: 420px;
+            min-height: 60px;
+            padding: 12px 14px;
+            border: 1px solid #cbd5e1;
+            border-radius: 10px;
+            resize: vertical;
+            font-size: 16px;
+            display: block;
+            margin: 0 auto 15px auto;
+            outline: none;
+            box-sizing: border-box;
+        }
+
+        button {
+            padding: 10px 18px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.2s ease;
+            background-color: #4f46e5;
+        }
+
+        button:hover {
+            background-color: #cbd5e1;
+            ;
+        }
+    </style>
+    <div class="gamebox">
+        <h1>Guess a number</h1>
+        <h3>I am thinking of a number between 1 and 100</h3>
+        <input id="answer" type="number" min="1" max="100" placeholder="Enter Your guess here">
+        <button id="guessbtn">Guess</button>
+        <button id="restart">New Game</button>
+        <h2 id="response">Try Entering a Number</h2>
+        <div id="attempts">
+            <h2>Attempts: </h2>
+        </div>
+        <div id="best_result">
+            <h2>Best Result: </h2>
+        </div>
+    </div>
+</body>
+<script>
+    let secret = Math.floor(Math.random() * 100);
+    let guess = null;
+    let attempts = 0;
+    let bestResult = null;
+
+    const response = document.getElementById("response")
+    const answer = document.getElementById("answer")
+    const guessBtn = document.getElementById("guessbtn")
+    const restartBtn = document.getElementById("restart")
+    const attemptsdiv = document.getElementById("attempts")
+    const bestResultDiv = document.getElementById("best_result")
+
+    function updateAttempts() {
+        attemptsdiv.innerHTML = "<h2>Attempts: " + attempts + "</h2>";
+    }
+
+    function updateBestResult() {
+        if (bestResult === null) {
+            bestResultDiv.innerHTML = "<h2>Best Result: N/A</H2>"
+        }
+        else {
+            bestResultDiv.innerHTML = "<h2>Best Result: " + bestResult + "</h2>";
+        }
+    }
+    function newGame() {
+        secret = Math.floor(Math.random() * 100) + 1;
+        attempts = 0;
+        guess = null;
+        answer.value = "";
+        response.textContent = "Enter a new guess";
+        updateAttempts();
+    }
+    answer.addEventListener("input", function (e) {
+        const value = Number(e.target.value);
+        guess = value;
+    });
+
+    guessBtn.addEventListener("click", function () {
+        if (guess === null || Number.isNaN(guess) || guess < 1 || guess > 100) {
+            response.textContent = "Please enter a valid number between 1 and 100";
+            return;
+        }
+
+        attempts++;
+        updateAttempts();
+
+        if (guess === secret) {
+            response.textContent = "Correct! You guessed it in " + attempts + " attempts.";
+            if (bestResult === null || attempts < bestResult) {
+                bestResult = attempts;
+                updateBestResult();
+            }
+        } else if (guess > secret) {
+            response.textContent = "Value too high. Go low!";
+        } else {
+            response.textContent = "Value too low. Go high!";
+        }
+    });
+
+    restartBtn.addEventListener("click", function () {
+        newGame();
+    });
+
+    updateAttempts();
+    updateBestResult();
+</script>
+
+</html>
